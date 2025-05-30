@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Payment Gateway</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff00cc, #3333ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .payment-card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            cursor: pointer;
+        }
+
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff00cc, #3333ff);
+            z-index: 2;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(102, 51, 255, 0.3);
+        }
+
+        .payment-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .payment-card:hover::after {
+            transform: translateX(100%);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .payment-number {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-number span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .payment-qr {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .payment-qr:hover {
+            transform: scale(1.05);
+        }
+
+        .payment-instruction {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .payment-instruction h3 {
+            margin-bottom: 10px;
+            color: #ff00cc;
+        }
+
+        .payment-instruction ol {
+            padding-left: 20px;
+        }
+
+        .payment-instruction li {
+            margin-bottom: 8px;
+        }
+
+        .dana {
+            border-top: 5px solid #03d0b7;
+        }
+
+        .dana .card-icon {
+            background: linear-gradient(45deg, #03d0b7, #02a796);
+        }
+
+        .ovo {
+            border-top: 5px solid #4c2b87;
+        }
+
+        .ovo .card-icon {
+            background: linear-gradient(45deg, #4c2b87, #3a2068);
+        }
+
+        .gopay {
+            border-top: 5px solid #00aa13;
+        }
+
+        .gopay .card-icon {
+            background: linear-gradient(45deg, #00aa13, #00880f);
+        }
+
+        .qris {
+            border-top: 5px solid #ff6b00;
+        }
+
+        .qris .card-icon {
+            background: linear-gradient(45deg, #ff6b00, #cc5500);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #00cc66, #00aa55);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .floating {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(102, 51, 255, 0.3), transparent 70%);
+            filter: blur(40px);
+            z-index: 0;
+        }
+
+        .floating:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 0, 204, 0.3), transparent 70%);
+        }
+
+        .floating:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(51, 204, 255, 0.3), transparent 70%);
+        }
+
+        .floating:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            width: 180px;
+            height: 180px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-number {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .copy-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating"></div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+    
+    <div class="container">
+        <header>
+            <h1>DIGITAL PAYMENT GATEWAY</h1>
+            <p class="subtitle">Pilih metode pembayaran digital favorit Anda</p>
+        </header>
+        
+        <div class="payment-grid">
+            <!-- Dana Payment Card -->
+            <div class="payment-card dana">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_DANA.svg" alt="DANA">
+                    </div>
+                    <h2 class="card-title">DANA</h2>
+                </div>
+                <div class="payment-number" id="dana-number">
+                    <span>089525446174</span>
+                    <button class="copy-btn" onclick="copyToClipboard('dana-number')">
+                        <i class="fas fa-copy"></i> Salin
+                    </button>
+                </div>
+                <div class="payment-instruction">
+                    <h3>Cara Pembayaran:</h3>
+                    <ol>
+                        <li>Buka aplikasi DANA di smartphone Anda</li>
+                        <li>Pilih menu "Kirim" atau "Transfer"</li>
+                        <li>Masukkan nomor DANA di atas</li>
+                        <li>Masukkan nominal pembayaran</li>
+                        <li>Konfirmasi dan selesaikan transaksi</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- OVO Payment Card -->
+            <div class="payment-card ovo">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo.svg" alt="OVO">
+                    </div>
+                    <h2 class="card-title">OVO</h2>
+                </div>
+                <div class="payment-number" id="ovo-number">
+                    <span>089525446174</span>
+                    <button class="copy-btn" onclick="copyToClipboard('ovo-number')">
+                        <i class="fas fa-copy"></i> Salin
+                    </button>
+                </div>
+                <div class="payment-instruction">
+                    <h3>Cara Pembayaran:</h3>
+                    <ol>
+                        <li>Buka aplikasi OVO di smartphone Anda</li>
+                        <li>Pilih menu "Transfer"</li>
+                        <li>Masukkan nomor OVO di atas</li>
+                        <li>Masukkan nominal pembayaran</li>
+                        <li>Verifikasi dengan PIN OVO Anda</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- GoPay Payment Card -->
+            <div class="payment-card gopay">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+                    </div>
+                    <h2 class="card-title">GoPay</h2>
+                </div>
+                <div class="payment-number" id="gopay-number">
+                    <span>089525446174</span>
+                    <button class="copy-btn" onclick="copyToClipboard('gopay-number')">
+                        <i class="fas fa-copy"></i> Salin
+                    </button>
+                </div>
+                <div class="payment-instruction">
+                    <h3>Cara Pembayaran:</h3>
+                    <ol>
+                        <li>Buka aplikasi Gojek di smartphone Anda</li>
+                        <li>Pilih menu "Bayar" atau "GoPay"</li>
+                        <li>Pilih "Transfer" lalu "Ke Akun Lain"</li>
+                        <li>Masukkan nomor GoPay di atas</li>
+                        <li>Konfirmasi dan selesaikan transaksi</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- QRIS Payment Card -->
+            <div class="payment-card qris">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <img src="https://img1.pixhost.to/images/6128/605514268_pnterxx03.jpg" alt="QRIS">
+                    </div>
+                    <h2 class="card-title">QRIS</h2>
+                </div>
+                <img src="https://img1.pixhost.to/images/6128/605514268_pnterxx03.jpg" alt="QR Code" class="payment-qr">
+                <div class="payment-instruction">
+                    <h3>Cara Pembayaran:</h3>
+                    <ol>
+                        <li>Buka aplikasi e-wallet atau mobile banking</li>
+                        <li>Pilih fitur scan QRIS</li>
+                        <li>Arahkan kamera ke QR code di atas</li>
+                        <li>Masukkan nominal pembayaran</li>
+                        <li>Konfirmasi dan selesaikan transaksi</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Nomor berhasil disalin!</span>
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.querySelector('span').textContent;
+            
+            // Create a temporary textarea to copy text
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            // Show notification
+            showNotification();
+            
+            // Add visual feedback
+            element.style.background = "rgba(0, 200, 100, 0.3)";
+            setTimeout(() => {
+                element.style.background = "rgba(0, 0, 0, 0.3)";
+            }, 1000);
+        }
+        
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Add 3D effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.payment-card');
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2;
+                
+                const angleX = (e.clientY - cardCenterY) / 25;
+                const angleY = (cardCenterX - e.clientX) / 25;
+                
+                card.style.transform = `translateY(-15px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+            });
+        });
+        
+        // Reset cards when mouse leaves container
+        document.querySelector('.container').addEventListener('mouseleave', () => {
+            const cards = document.querySelectorAll('.payment-card');
+            cards.forEach(card => {
+                card.style.transform = 'translateY(-15px) rotateX(0) rotateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

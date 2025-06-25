@@ -3,506 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Payment Gateway</title>
+    <title>Terima Kasih Ibu Guru Wali Kelas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-
+        
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3e8f7 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            color: #ffffff;
-            padding: 20px;
-            perspective: 1000px;
+            justify-content: center;
             overflow-x: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
+            padding: 20px;
             position: relative;
-            z-index: 10;
+            color: #333;
         }
-
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #ff00cc, #3333ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
-            letter-spacing: 1px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .payment-card {
-            background: rgba(20, 20, 40, 0.7);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
-            cursor: pointer;
-        }
-
-        .payment-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #ff00cc, #3333ff);
-            z-index: 2;
-        }
-
-        .payment-card:hover {
-            transform: translateY(-15px) rotateX(5deg);
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(102, 51, 255, 0.3);
-        }
-
-        .payment-card::after {
-            content: '';
+        
+        body::before {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(120deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                transparent 100%);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,100 L100,0 Z" fill="rgba(255,255,255,0.2)"/></svg>');
+            background-size: cover;
+            opacity: 0.1;
+            z-index: -1;
         }
-
-        .payment-card:hover::after {
-            transform: translateX(100%);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 3;
-        }
-
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-icon img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .card-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        .payment-number {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .payment-number span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .copy-btn {
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .copy-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .payment-qr {
+        
+        .container {
+            max-width: 1200px;
             width: 100%;
-            max-width: 200px;
-            margin: 0 auto 20px;
-            display: block;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            margin: 30px auto;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
-
-        .payment-qr:hover {
-            transform: scale(1.05);
-        }
-
-        .payment-instruction {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-top: 15px;
-        }
-
-        .payment-instruction h3 {
-            margin-bottom: 10px;
-            color: #ff00cc;
-        }
-
-        .payment-instruction ol {
-            padding-left: 20px;
-        }
-
-        .payment-instruction li {
-            margin-bottom: 8px;
-        }
-
-        .dana {
-            border-top: 5px solid #03d0b7;
-        }
-
-        .dana .card-icon {
-            background: linear-gradient(45deg, #03d0b7, #02a796);
-        }
-
-        .ovo {
-            border-top: 5px solid #4c2b87;
-        }
-
-        .ovo .card-icon {
-            background: linear-gradient(45deg, #4c2b87, #3a2068);
-        }
-
-        .gopay {
-            border-top: 5px solid #00aa13;
-        }
-
-        .gopay .card-icon {
-            background: linear-gradient(45deg, #00aa13, #00880f);
-        }
-
-        .qris {
-            border-top: 5px solid #ff6b00;
-        }
-
-        .qris .card-icon {
-            background: linear-gradient(45deg, #ff6b00, #cc5500);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(45deg, #00cc66, #00aa55);
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(120deg, #8a4fff 0%, #4a6fff 100%);
             color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateX(150%);
-            transition: transform 0.4s ease;
-            z-index: 1000;
+            position: relative;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/></svg>');
+            background-size: 100% 100%;
+            opacity: 0.5;
+        }
+        
+        .header h1 {
+            font-size: 3.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 3s infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.6rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+        
+        .teacher-profile {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(to right, #f9f7ff, #f0f4ff);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .teacher-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+        
+        .teacher-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .teacher-photo:hover img {
+            transform: scale(1.1);
+        }
+        
+        .teacher-info {
+            flex: 1;
+        }
+        
+        .teacher-info h2 {
+            color: #5d5fef;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .teacher-info p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .quote {
+            font-style: italic;
+            border-left: 4px solid #8a4fff;
+            padding-left: 20px;
+            margin-top: 15px;
+            color: #6a5af9;
+            font-size: 1.3rem;
+        }
+        
+        .thank-you-section {
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        
+        .thank-you-section h3 {
+            color: #ff6b6b;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .thank-you-section p {
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: #444;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 30px;
+            font-style: italic;
+            font-weight: 600;
+            color: #6a5af9;
+            font-size: 1.3rem;
+        }
+        
+        .gallery-section {
+            margin-bottom: 40px;
+        }
+        
+        .gallery-section h3 {
+            text-align: center;
+            color: #4a6fff;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 15px;
+        }
+        
+        .photo-item {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .photo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 15px;
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .photo-item:hover .photo-caption {
+            opacity: 1;
+        }
+        
+        .students-section {
+            margin-bottom: 40px;
+        }
+        
+        .students-section h3 {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .students-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .student-card {
+            background: #f9f7ff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid #eae6ff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .student-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .student-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #8a4fff, #4a6fff);
+        }
+        
+        .student-card h4 {
+            color: #5d5fef;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
-        .notification.show {
-            transform: translateX(0);
+        
+        .student-card p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-style: italic;
         }
-
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .heart {
+            color: #ff6b6b;
+            animation: heartbeat 1.2s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-caption {
+            color: white;
+            text-align: center;
+            font-size: 1.3rem;
+            margin-top: 15px;
+        }
+        
+        .close-btn {
             position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(102, 51, 255, 0.3), transparent 70%);
-            filter: blur(40px);
-            z-index: 0;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-
-        .floating:nth-child(1) {
-            top: 10%;
-            left: 5%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 0, 204, 0.3), transparent 70%);
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
         }
-
-        .floating:nth-child(2) {
-            top: 60%;
-            right: 10%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(51, 204, 255, 0.3), transparent 70%);
-        }
-
-        .floating:nth-child(3) {
-            bottom: 20%;
-            left: 15%;
-            width: 180px;
-            height: 180px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
+        
+        @media (max-width: 992px) {
+            .header h1 {
+                font-size: 3rem;
             }
             
-            .payment-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .payment-number {
+            .teacher-profile {
                 flex-direction: column;
-                gap: 15px;
+                text-align: center;
             }
             
-            .copy-btn {
-                width: 100%;
-                justify-content: center;
+            .teacher-info {
+                text-align: center;
+            }
+            
+            .quote {
+                border-left: none;
+                padding-left: 0;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.3rem;
+            }
+            
+            .header p {
+                font-size: 1.3rem;
+            }
+            
+            .teacher-photo {
+                width: 180px;
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .teacher-info h2 {
+                font-size: 2rem;
+            }
+            
+            .thank-you-section h3,
+            .gallery-section h3,
+            .students-section h3 {
+                font-size: 1.8rem;
+            }
+            
+            .photo-gallery {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating background elements -->
-    <div class="floating"></div>
-    <div class="floating"></div>
-    <div class="floating"></div>
-    
     <div class="container">
-        <header>
-            <h1>DIGITAL PAYMENT GATEWAY</h1>
-            <p class="subtitle">Pilih metode pembayaran digital favorit Anda</p>
-        </header>
+        <div class="header">
+            <h1><i class="fas fa-heart"></i> Terima Kasih Ibu Guru Wali Kelas! <i class="fas fa-heart"></i></h1>
+            <p>Atas bimbingan, motivasi, dan dukungannya selama ini</p>
+        </div>
         
-        <div class="payment-grid">
-            <!-- Dana Payment Card -->
-            <div class="payment-card dana">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_DANA.svg" alt="DANA">
-                    </div>
-                    <h2 class="card-title">DANA</h2>
-                </div>
-                <div class="payment-number" id="dana-number">
-                    <span>089525446174</span>
-                    <button class="copy-btn" onclick="copyToClipboard('dana-number')">
-                        <i class="fas fa-copy"></i> Salin
-                    </button>
-                </div>
-                <div class="payment-instruction">
-                    <h3>Cara Pembayaran:</h3>
-                    <ol>
-                        <li>Buka aplikasi DANA di smartphone Anda</li>
-                        <li>Pilih menu "Kirim" atau "Transfer"</li>
-                        <li>Masukkan nomor DANA di atas</li>
-                        <li>Masukkan nominal pembayaran</li>
-                        <li>Konfirmasi dan selesaikan transaksi</li>
-                    </ol>
-                </div>
+        <div class="teacher-profile">
+            <div class="teacher-photo">
+                <img src="https://files.catbox.moe/e2egk2" alt="Foto Ibu Guru">
             </div>
-            
-            <!-- OVO Payment Card -->
-            <div class="payment-card ovo">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo.svg" alt="OVO">
-                    </div>
-                    <h2 class="card-title">OVO</h2>
-                </div>
-                <div class="payment-number" id="ovo-number">
-                    <span>089525446174</span>
-                    <button class="copy-btn" onclick="copyToClipboard('ovo-number')">
-                        <i class="fas fa-copy"></i> Salin
-                    </button>
-                </div>
-                <div class="payment-instruction">
-                    <h3>Cara Pembayaran:</h3>
-                    <ol>
-                        <li>Buka aplikasi OVO di smartphone Anda</li>
-                        <li>Pilih menu "Transfer"</li>
-                        <li>Masukkan nomor OVO di atas</li>
-                        <li>Masukkan nominal pembayaran</li>
-                        <li>Verifikasi dengan PIN OVO Anda</li>
-                    </ol>
-                </div>
-            </div>
-            
-            <!-- GoPay Payment Card -->
-            <div class="payment-card gopay">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
-                    </div>
-                    <h2 class="card-title">GoPay</h2>
-                </div>
-                <div class="payment-number" id="gopay-number">
-                    <span>089525446174</span>
-                    <button class="copy-btn" onclick="copyToClipboard('gopay-number')">
-                        <i class="fas fa-copy"></i> Salin
-                    </button>
-                </div>
-                <div class="payment-instruction">
-                    <h3>Cara Pembayaran:</h3>
-                    <ol>
-                        <li>Buka aplikasi Gojek di smartphone Anda</li>
-                        <li>Pilih menu "Bayar" atau "GoPay"</li>
-                        <li>Pilih "Transfer" lalu "Ke Akun Lain"</li>
-                        <li>Masukkan nomor GoPay di atas</li>
-                        <li>Konfirmasi dan selesaikan transaksi</li>
-                    </ol>
-                </div>
-            </div>
-            
-            <!-- QRIS Payment Card -->
-            <div class="payment-card qris">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <img src="https://img1.pixhost.to/images/6128/605514268_pnterxx03.jpg" alt="QRIS">
-                    </div>
-                    <h2 class="card-title">QRIS</h2>
-                </div>
-                <img src="https://img1.pixhost.to/images/6128/605514268_pnterxx03.jpg" alt="QR Code" class="payment-qr">
-                <div class="payment-instruction">
-                    <h3>Cara Pembayaran:</h3>
-                    <ol>
-                        <li>Buka aplikasi e-wallet atau mobile banking</li>
-                        <li>Pilih fitur scan QRIS</li>
-                        <li>Arahkan kamera ke QR code di atas</li>
-                        <li>Masukkan nominal pembayaran</li>
-                        <li>Konfirmasi dan selesaikan transaksi</li>
-                    </ol>
+            <div class="teacher-info">
+                <h2>Ibu Ai Ida Farida, S.Pd.</h2>
+                <p>Wali Kelas VIII C | Guru Pendidikan Pancasila</p>
+                <p>Terima kasih atas dedikasi, kesabaran, dan kasih sayang yang Ibu berikan kepada kami. Ibu telah menjadi sosok yang tidak hanya mengajar, tetapi juga mendidik, membimbing, dan menginspirasi kami semua.</p>
+                <div class="quote">
+                    "Guru yang baik itu seperti lilin - menghabiskan dirinya sendiri untuk menerangi jalan bagi orang lain"
                 </div>
             </div>
         </div>
+        
+        <div class="thank-you-section">
+            <h3><i class="fas fa-book-open"></i> Ucapan Terima Kasih</h3>
+            <p>
+                Yang terhormat Ibu Guru Wali Kelas,<br><br>
+                Dengan penuh rasa syukur dan kebahagiaan, kami mengucapkan terima kasih yang sebesar-besarnya atas segala bimbingan, perhatian, dan motivasi yang Ibu berikan selama ini. Berkat dedikasi dan kesabaran Ibu, kami berhasil melewati tahun ajaran ini dengan baik dan kini siap untuk melanjutkan ke jenjang pendidikan berikutnya.
+            </p>
+            <p>
+                Setiap nasihat, dukungan, dan perhatian yang Ibu berikan telah menjadi bekal berharga bagi kami. Ibu tidak hanya mengajarkan ilmu pengetahuan, tetapi juga nilai-nilai kehidupan yang akan selalu kami ingat dan terapkan di masa depan.
+            </p>
+            <p>
+                Kenangan indah selama belajar di kelas Ibu akan selalu melekat di hati kami. Mulai dari pembelajaran yang menyenangkan, tawa bersama, hingga dukungan Ibu saat kami menghadapi kesulitan. Semua itu telah membentuk kami menjadi pribadi yang lebih baik.
+            </p>
+            <p>
+                Semoga kebaikan Ibu dibalas dengan berlipat ganda oleh Tuhan Yang Maha Esa. Kami berjanji akan terus belajar dengan giat dan menjadi siswa yang membanggakan Ibu di jenjang pendidikan berikutnya.
+            </p>
+            <div class="signature">
+                <p>Hormat kami,</p>
+                <p>Seluruh Siswa Kelas VIII-C</p>
+            </div>
+        </div>
+        
+        <div class="gallery-section">
+            <h3><i class="fas fa-camera"></i> Galeri Kenangan</h3>
+            <div class="photo-gallery">
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/xzx742" alt="Foto Kenangan">
+                    <div class="photo-caption">Foto Kenangan</div>
+                </div>
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/qolpum" alt="Foto Kenangan">
+                    <div class="photo-caption">Foto Kenangan</div>
+                </div>
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/qolpum" alt="Foto Kenangan">
+                    <div class="photo-caption">Foto Kenangan</div>
+                </div>
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/766a2h.jpg" alt="Foto Kenangan">
+                    <div class="photo-caption">Foto Kenangan</div>
+                </div>
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/3gmwt0.jpg" alt="Foto Kenangan">
+                    <div class="photo-caption">Momen perpisahan kelas</div>
+                </div>
+                <div class="photo-item">
+                    <img src="https://files.catbox.moe/uz3dw8.jpg" alt="Foto Kenangan">
+                    <div class="photo-caption">Foto Kenangan kelas</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Dibuat dengan <span class="heart"><i class="fas fa-heart"></i></span> oleh Siswa-Siswi Kelas VIII-C</p>
+            <p>Tahun Ajaran 2024-2025</p>
+        </div>
     </div>
     
-    <div class="notification" id="notification">
-        <i class="fas fa-check-circle"></i>
-        <span>Nomor berhasil disalin!</span>
+    <div class="modal" id="imageModal">
+        <div class="close-btn" id="closeModal"><i class="fas fa-times"></i></div>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Foto Kenangan">
+            <div class="modal-caption" id="modalCaption"></div>
+        </div>
     </div>
-
+    
     <script>
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            const text = element.querySelector('span').textContent;
-            
-            // Create a temporary textarea to copy text
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            
-            // Show notification
-            showNotification();
-            
-            // Add visual feedback
-            element.style.background = "rgba(0, 200, 100, 0.3)";
-            setTimeout(() => {
-                element.style.background = "rgba(0, 0, 0, 0.3)";
-            }, 1000);
-        }
+        // Modal untuk gambar galeri
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        const closeModal = document.getElementById('closeModal');
+        const photoItems = document.querySelectorAll('.photo-item');
         
-        function showNotification() {
-            const notification = document.getElementById('notification');
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Add 3D effect on mouse move
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.payment-card');
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardCenterX = rect.left + rect.width / 2;
-                const cardCenterY = rect.top + rect.height / 2;
+        photoItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').src;
+                const caption = item.querySelector('.photo-caption').textContent;
                 
-                const angleX = (e.clientY - cardCenterY) / 25;
-                const angleY = (cardCenterX - e.clientX) / 25;
-                
-                card.style.transform = `translateY(-15px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+                modalImage.src = imgSrc;
+                modalCaption.textContent = caption;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             });
         });
         
-        // Reset cards when mouse leaves container
-        document.querySelector('.container').addEventListener('mouseleave', () => {
-            const cards = document.querySelectorAll('.payment-card');
-            cards.forEach(card => {
-                card.style.transform = 'translateY(-15px) rotateX(0) rotateY(0)';
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Tutup modal saat klik di luar gambar
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Animasi elemen saat muncul di layar
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 1s ease forwards';
+                }
             });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.teacher-profile, .thank-you-section, .gallery-section, .students-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.animation = 'none';
+            observer.observe(section);
+        });
+        
+        // Tambahkan style untuk animasi fadeInUp
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Animasi floating untuk beberapa elemen
+        const floatingElements = document.querySelectorAll('.header h1, .teacher-photo');
+        floatingElements.forEach(el => {
+            el.classList.add('floating');
         });
     </script>
 </body>
-</html>
+                    </html>
